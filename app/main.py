@@ -14,8 +14,8 @@ logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
 STRAIN_GAUGE_1_THRESHOLD = 500.0
-STRAIN_GAUGE_1_ENDPOINT = "/strain_gauge_warning"
-STRAIN_GAUGE_1_WEBHOOK_URL = f"http://127.0.0.1:8000{STRAIN_GAUGE_1_ENDPOINT}"
+TEST_ENDPOINT = "/test_strain_gauge_warning"
+TEST_WEBHOOK_URL = f"http://127.0.0.1:8000{TEST_ENDPOINT}"
 
 
 @asynccontextmanager
@@ -52,19 +52,19 @@ async def notify_webhook(data: SensorData) -> None:
     async with httpx.AsyncClient() as client:
         try:
             await client.post(
-                STRAIN_GAUGE_1_WEBHOOK_URL,
+                TEST_WEBHOOK_URL,
                 json=data.model_dump(mode="json"),
                 timeout=10.0,
             )
         except httpx.HTTPError:
             logger.exception(
                 "Failed to POST strain gauge warning to webhook %s",
-                STRAIN_GAUGE_1_WEBHOOK_URL,
+                TEST_WEBHOOK_URL,
             )
 
 
-@app.post(STRAIN_GAUGE_1_ENDPOINT)
-async def receive_strain_gauge_warning(data: SensorData):
+@app.post(TEST_ENDPOINT)
+async def test_strain_gauge_warning(data: SensorData):
     logger.info("Received strain gauge warning for value %s", data.sensors.strain_gauge_1)
 
 
