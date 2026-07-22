@@ -20,6 +20,8 @@ def get_session() -> Iterator[Session]:
 
 
 class SensorDataRecord(SQLModel, table=True):
+    __tablename__ = "sensor_data_records"
+
     id: int | None = Field(default=None, primary_key=True)
     asset_id: str
     timestamp: datetime
