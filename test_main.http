@@ -93,3 +93,7 @@ Content-Type: application/json
         client.assert(text.includes("strain_gauge_2"), "Expected error to mention strain_gauge_2");
     });
 %}
+
+### Metrics
+GET http://127.0.0.1:8000/metrics
+Accept: text/plain

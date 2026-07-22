@@ -41,3 +41,14 @@ To view all the stored sensor data records:
 ```bash
 sqlite3 database.db "SELECT * FROM sensor_data_records;"
 ```
+
+## Metrics
+
+The application contains the metrics middleware to collect and report service performance metrics in the standard Prometheus text format:
+
+- `http_requests_total` — request count by `status_code`, for success/failure rates and overall throughput.
+- `http_request_duration_seconds` — request latency histogram, for latency  quantiles (p50, p95, p99).
+
+```bash
+curl http://127.0.0.1:8000/metrics
+```

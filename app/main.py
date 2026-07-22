@@ -7,6 +7,7 @@ from fastapi import BackgroundTasks, Depends, FastAPI, Response, status
 from sqlmodel import Session
 
 from app.database import SensorDataRecord, get_session, init_db
+from app.metrics import METRICS_ENDPOINT, MetricsMiddleware, get_metrics
 from app.models import SensorData
 
 logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
@@ -24,21 +25,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-
-
-async def notify_webhook(data: SensorData) -> None:
-    async with httpx.AsyncClient() as client:
-        try:
-            await client.post(
-                STRAIN_GAUGE_1_WEBHOOK_URL,
-                json=data.model_dump(mode="json"),
-                timeout=10.0,
-            )
-        except httpx.HTTPError:
-            logger.exception(
-                "Failed to POST strain gauge warning to webhook %s",
-                STRAIN_GAUGE_1_WEBHOOK_URL,
-            )
+app.add_middleware(MetricsMiddleware)
 
 
 @app.post("/sensor_data")
@@ -61,6 +48,26 @@ async def evaluate_sensor_data(
     return Response(status_code=status.HTTP_200_OK)
 
 
+async def notify_webhook(data: SensorData) -> None:
+    async with httpx.AsyncClient() as client:
+        try:
+            await client.post(
+                STRAIN_GAUGE_1_WEBHOOK_URL,
+                json=data.model_dump(mode="json"),
+                timeout=10.0,
+            )
+        except httpx.HTTPError:
+            logger.exception(
+                "Failed to POST strain gauge warning to webhook %s",
+                STRAIN_GAUGE_1_WEBHOOK_URL,
+            )
+
+
 @app.post(STRAIN_GAUGE_1_ENDPOINT)
 async def receive_strain_gauge_warning(data: SensorData):
     logger.info("Received strain gauge warning for value %s", data.sensors.strain_gauge_1)
+
+
+@app.get(METRICS_ENDPOINT)
+async def metrics():
+    return get_metrics()
