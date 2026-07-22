@@ -12,6 +12,15 @@ Content-Type: application/json
   }
 }
 
+> {%
+    client.test("Status is 200", function() {
+        client.assert(response.status === 200, "Expected 200 but got " + response.status);
+    });
+    client.test("Body is empty", function() {
+        client.assert(!response.body, "Expected empty body");
+    });
+%}
+
 ### Default with the warning
 POST http://127.0.0.1:8000/sensor_data
 Content-Type: application/json
@@ -26,6 +35,15 @@ Content-Type: application/json
   }
 }
 
+> {%
+    client.test("Status is 200", function() {
+        client.assert(response.status === 200, "Expected 200 but got " + response.status);
+    });
+    client.test("Body is empty", function() {
+        client.assert(!response.body, "Expected empty body");
+    });
+%}
+
 ### Missing field
 POST http://127.0.0.1:8000/sensor_data
 Content-Type: application/json
@@ -38,6 +56,17 @@ Content-Type: application/json
     "temperature": 65.0
   }
 }
+
+> {%
+    client.test("Status is 422", function() {
+        client.assert(response.status === 422, "Expected 422 but got " + response.status);
+    });
+    client.test("Error mentions missing strain_gauge_1", function() {
+        const body = response.body;
+        const text = typeof body === "string" ? body : JSON.stringify(body);
+        client.assert(text.includes("strain_gauge_1"), "Expected error to mention strain_gauge_1");
+    });
+%}
 
 ### Extra field
 POST http://127.0.0.1:8000/sensor_data
@@ -53,3 +82,14 @@ Content-Type: application/json
     "temperature": 65.0
   }
 }
+
+> {%
+    client.test("Status is 422", function() {
+        client.assert(response.status === 422, "Expected 422 but got " + response.status);
+    });
+    client.test("Error mentions extra field", function() {
+        const body = response.body;
+        const text = typeof body === "string" ? body : JSON.stringify(body);
+        client.assert(text.includes("strain_gauge_2"), "Expected error to mention strain_gauge_2");
+    });
+%}
