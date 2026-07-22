@@ -1,6 +1,6 @@
 import time
 
-from prometheus_client import CONTENT_TYPE_LATEST, REGISTRY, Counter, Histogram, generate_latest
+from prometheus_client import CONTENT_TYPE_LATEST, REGISTRY, Counter, Histogram, generate_latest, PROCESS_COLLECTOR
 from prometheus_client.gc_collector import GC_COLLECTOR
 from prometheus_client.platform_collector import PLATFORM_COLLECTOR
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -12,6 +12,7 @@ METRICS_ENDPOINT = "/metrics"
 
 REGISTRY.unregister(GC_COLLECTOR)
 REGISTRY.unregister(PLATFORM_COLLECTOR)
+REGISTRY.unregister(PROCESS_COLLECTOR)
 
 request_count = Counter(
     "http_requests_total",
