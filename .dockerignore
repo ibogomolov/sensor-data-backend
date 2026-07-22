@@ -1,0 +1,6 @@
+.venv
+__pycache__
+.git
+.idea
+database.db
+test_main.http
