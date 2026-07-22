@@ -13,7 +13,7 @@ docker build -t sensor-data-backend .
 Run it:
 
 ```bash
-docker run --rm -p 8000:8000 -v "$(pwd)/database.db:/app/database.db" sensor-data-backend
+docker run --rm -p 8000:8000 -v "$(pwd):/app/external_volume/" sensor-data-backend
 ```
 
 The API is served at `http://127.0.0.1:8000`.
@@ -35,7 +35,7 @@ curl -X POST --location "http://127.0.0.1:8000/sensor_data" \
 
 ## Access the DB
 
-The SQLite database file `database.db` is located in the project folder.
+The SQLite database file `database.db` will be located in the project folder, after the first run of the application.
 To view all the stored sensor data records:
 
 ```bash
