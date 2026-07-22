@@ -1,0 +1,55 @@
+### Default
+POST http://127.0.0.1:8000/sensor_data
+Content-Type: application/json
+
+{
+  "asset_id": "WTG-Offshore-01",
+  "timestamp": "2026-02-15T10:30:00Z",
+  "sensors": {
+    "vibration_x": 0.05,
+    "strain_gauge_1": 450.2,
+    "temperature": 65.0
+  }
+}
+
+### Default with the warning
+POST http://127.0.0.1:8000/sensor_data
+Content-Type: application/json
+
+{
+  "asset_id": "WTG-Offshore-02",
+  "timestamp": "2026-02-15T10:30:00Z",
+  "sensors": {
+    "vibration_x": 0.05,
+    "strain_gauge_1": 550.2,
+    "temperature": 65.0
+  }
+}
+
+### Missing field
+POST http://127.0.0.1:8000/sensor_data
+Content-Type: application/json
+
+{
+  "asset_id": "WTG-Offshore-02",
+  "timestamp": "2026-02-15T10:30:00Z",
+  "sensors": {
+    "vibration_x": 0.05,
+    "temperature": 65.0
+  }
+}
+
+### Extra field
+POST http://127.0.0.1:8000/sensor_data
+Content-Type: application/json
+
+{
+  "asset_id": "WTG-Offshore-02",
+  "timestamp": "2026-02-15T10:30:00Z",
+  "sensors": {
+    "vibration_x": 0.05,
+    "strain_gauge_1": 450.2,
+    "strain_gauge_2": 450.2,
+    "temperature": 65.0
+  }
+}
